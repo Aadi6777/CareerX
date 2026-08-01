@@ -3,16 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "description": "AI-Driven Career Counseling Platform powered by Gemini AI, Supabase, and React",
-  "workspaces": [
-    "client",
-    "server"
-  ],
   "scripts": {
-    "dev:server": "npm run dev --workspace=server",
-    "dev:client": "npm run dev --workspace=client",
+    "build": "cd client && npm install && npm run build",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
-    "build": "npm run build --workspace=client",
-    "install:all": "npm install",
+    "install:all": "npm install && cd server && npm install && cd client && npm install",
     "test": "node scripts/test-api.js"
   },
   "devDependencies": {
