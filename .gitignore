@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+server/node_modules/
+client/node_modules/
+
+# Build Output
+dist/
+client/dist/
+
+# Environment Variables (Secrets)
+.env
+.env.local
+server/.env
+
+# macOS / OS Files
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
