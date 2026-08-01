@@ -1,118 +1,78 @@
-# 🎓 CareerX — AI-Driven Career Counseling Platform
+# 🎓 CareerX — AI-Powered Student Guidance & Counseling Companion
 
-> **Transforming student academic uncertainty into personalized, data-backed decisions powered by Gemini AI, Supabase, and React.**
-
----
-
-## 🌟 Overview
-
-Every year, millions of high school and college students face uncertainty regarding stream selection, entrance exam preparation, target career paths, and college selection. **CareerX** is an end-to-end, scalable AI advisory ecosystem built to act as a continuous companion throughout a student's academic journey.
+> Helping high school and college students navigate academic choices, discover their natural strengths, build real-world skills, and plan for their future with confidence.
 
 ---
 
-## 🔥 Core Features & Modules
+## 🌟 Why CareerX Exists
 
-- 🧠 **AI Psychometric Assessment Engine**: 4-part diagnostic evaluating Quantitative Aptitude, Holland RIASEC Interest Inventory, Big Five Personality Traits, and Work Values synthesized into plain-language reports via Gemini 1.5 API.
-- 📊 **Skill-Gap Radar Analytics**: Interactive **Chart.js Radar & Bar chart** visualizations comparing student abilities against benchmark requirements for target careers.
-- 🗺️ **Personalized Learning Roadmap**: Time-bound, month-by-month milestone timeline with interactive completion checkmarks, progress ring, and resource links.
-- 📚 **Entrance Exam Guide & Tracker**: Comprehensive filterable database for **JEE Main/Adv, NEET, CLAT, CUET, IPMAT, SAT**, eligibility rules, prep lead times, and official NTA links.
-- 📍 **College Geo-Discovery**: Interactive **Leaflet Map** with distance radius sliders (50km–1500km), tuition budget filters, government/private badges, and NAAC accreditation tags.
-- 🤖 **24/7 AI Mentor Chatbot**: Context-aware persistent chat powered by Gemini API with **Safety Crisis Escalation** for mental health distress queries (Tele-MANAS: 14416).
-- 💰 **Job Market Trends & Education Budget Planner**: Real-time salary scales, YoY growth trends, 4-year tuition simulator, loan EMI calculator, and payback period forecasting.
-- 👨‍👩‍👧 **Multi-Role Access**: Linked view-only Parent Dashboard and Admin database management panel.
+Every year, millions of students finish school feeling uncertain about what step to take next. Traditional career counseling is often expensive, generic, or out of reach, leaving students and parents overwhelmed by endless choices, conflicting advice, and hidden costs.
+
+**CareerX** was built to change that. It’s an intelligent, unbiased, and continuous companion designed to guide students from grade 9 all the way through university admissions.
 
 ---
 
-## 🛠️ Technology Stack
+## 🚀 Key Features
 
-| Layer | Technology |
-|---|---|
-| **Frontend** | React 18, Vite, Tailwind CSS, Lucide Icons, Chart.js (`react-chartjs-2`), Leaflet (`react-leaflet`) |
-| **Backend** | Node.js, Express.js (Vercel Serverless ready) |
-| **Database** | **Supabase (PostgreSQL)** + Built-in Mock Fallback Engine |
-| **AI / Intelligence** | **Google Gemini 1.5 / 2.5 API** + Built-in Fallback Generator |
-| **Auth** | JWT Token Auth + Supabase / Demo Auth pre-fills |
-| **Deployment** | **Vercel** Monorepo (Frontend + Express API Serverless Functions in `vercel.json`) |
+- 🧠 **AI Psychometric Diagnostic**: A comprehensive assessment evaluating logical aptitude, Holland RIASEC interest profiles, Big Five personality traits, and personal values — producing plain-language insights powered by Google Gemini.
+- 📊 **Skill-Gap Analytics**: Interactive radar and bar charts comparing a student's current proficiency against benchmark requirements for target careers.
+- 🗺️ **Personalized Learning Roadmaps**: Time-bound, step-by-step monthly milestones complete with curated learning resources and progress tracking.
+- 📚 **Entrance Exam Tracker**: A structured guide covering major competitive exams (JEE, NEET, CLAT, CUET, IPMAT, SAT) with timelines, eligibility criteria, and preparation lead times.
+- 📍 **College Geo-Discovery**: Interactive Leaflet maps matching nearby colleges based on distance radius, tuition budgets, and NAAC accreditation.
+- 🤖 **24/7 AI Career Mentor**: A persistent conversational assistant that understands your profile, goals, and progress — with built-in safety guardrails and direct helpline links for mental wellness support.
+- 💰 **Job Market & Budget Calculator**: Real-world salary scales, industry growth trends, tuition & living cost estimation, monthly loan EMI calculations, and payback period forecasting.
+- 👨‍👩‍👧 **Parent & Admin Views**: Dedicated view-only dashboards for parents to follow progress, alongside content management tools for administrators.
 
 ---
 
-## 🚀 Quick Start (Local Development)
+## 🛠️ Built With
 
-### 1. Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn
+- **Frontend**: React 18, Vite, Tailwind CSS, Chart.js, Leaflet Maps, Lucide Icons
+- **Backend**: Node.js, Express.js (configured for Vercel Serverless Functions)
+- **Database**: Supabase (PostgreSQL) + built-in offline mock store
+- **AI Engine**: Google Gemini 2.5 API + intelligent fallback generator
 
-### 2. Installation
-Clone the repository and install dependencies for root, server, and client:
+---
 
+## ⚡ Quick Start
+
+### 1. Clone & Install
 ```bash
-cd /Users/aadipranav.s/CareerX
+git clone https://github.com/Aadi6777/CareerX.git
+cd CareerX
 npm run install:all
 ```
 
-### 3. Environment Variables (Optional)
-Copy `.env.example` to `.env`:
-
-```bash
-cp .env.example .env
-```
-
-> **Note:** CareerX includes an intelligent mock fallback engine. If `SUPABASE_URL` or `GEMINI_API_KEY` are not set, the platform will automatically run in Mock Mode out of the box!
-
-### 4. Run Locally
-Launch the Express backend server and Vite React frontend concurrently:
-
+### 2. Run Locally
 ```bash
 npm run dev
 ```
+- **Frontend App**: http://localhost:3000
+- **API Backend**: http://localhost:5001
 
-- **Frontend Client**: `http://localhost:3000`
-- **Express Backend API**: `http://localhost:5001`
-
----
-
-## 🧪 Automated API Test Suite
-
-To verify all 10 Express API endpoints locally, run:
-
+### 3. Run Automated Tests
 ```bash
 npm test
 ```
 
-Sample output:
-```text
-✅ Health Check: PASSED
-✅ Auth Login Test: PASSED
-✅ Assessment Questions API: PASSED
-✅ Entrance Exams API: PASSED
-✅ Colleges Geo Search API: PASSED
-✅ AI Mentor Chat API: PASSED
-✅ Education Budget API: PASSED
+---
 
-🎉 ALL BACKEND API ENDPOINTS TESTED SUCCESSFULLY!
-```
+## ☁️ Deployment
+
+### Vercel (Frontend & Serverless API)
+1. Import this repository in [Vercel](https://vercel.com).
+2. Set environment variables:
+   - `GEMINI_API_KEY`
+   - `JWT_SECRET`
+   - `SUPABASE_URL` (optional)
+   - `SUPABASE_ANON_KEY` (optional)
+3. Deploy! Both the React app and serverless API endpoints will deploy together.
+
+### Supabase Database Setup (Optional)
+Run the script in [`supabase/schema.sql`](./supabase/schema.sql) in your Supabase SQL Editor to initialize all tables, RLS policies, and seed data.
 
 ---
 
-## ⚡ Deployment to Vercel & Supabase
+## 🤝 License
 
-### Supabase Setup
-1. Create a project on [Supabase.com](https://supabase.com).
-2. Open the **SQL Editor** in Supabase dashboard.
-3. Paste and run the entire contents of [`supabase/schema.sql`](./supabase/schema.sql).
-
-### Vercel Deployment
-1. Push this repository to GitHub/GitLab.
-2. Import the project in [Vercel.com](https://vercel.com).
-3. Vercel automatically detects [`vercel.json`](./vercel.json).
-4. Configure Environment Variables in Vercel settings:
-   - `SUPABASE_URL` = `https://your-project.supabase.co`
-   - `SUPABASE_ANON_KEY` = `your-supabase-anon-key`
-   - `GEMINI_API_KEY` = `your-google-gemini-api-key`
-   - `JWT_SECRET` = `careerx_super_secret_jwt_key_2026`
-5. Deploy! Both the frontend static app and backend `/api/*` serverless functions deploy together.
-
----
-
-## 📄 License
-This project is licensed under the MIT License.
+Distributed under the MIT License.
