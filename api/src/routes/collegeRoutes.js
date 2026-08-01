@@ -5,16 +5,20 @@ const { filterCollegesByLocationAndBudget } = require('../services/geoService');
 
 router.get('/nearby', async (req, res) => {
   try {
-    const lat = req.query.lat ? parseFloat(req.query.lat) : 19.0760;
-    const lng = req.query.lng ? parseFloat(req.query.lng) : 72.8777;
-    const maxDistanceKm = req.query.radiusKm ? parseFloat(req.query.radiusKm) : null;
+    const lat = req.query.lat ? parseFloat(req.query.lat) : 12.9716; // Default Bengaluru
+    const lng = req.query.lng ? parseFloat(req.query.lng) : 77.5946;
+    const maxDistanceKm = req.query.radiusKm ? parseFloat(req.query.radiusKm) : 1500;
     const maxBudget = req.query.budget ? parseFloat(req.query.budget) : null;
     const typeFilter = req.query.type || 'All';
 
     let allColleges = [];
     if (!isMock && supabase) {
       const { data } = await supabase.from('colleges').select('*');
-      allColleges = data || [];
+      if (data && data.length > 0) {
+        allColleges = data;
+      } else {
+        allColleges = mockDB.colleges;
+      }
     } else {
       allColleges = mockDB.colleges;
     }
@@ -33,7 +37,11 @@ router.get('/search', async (req, res) => {
 
     if (!isMock && supabase) {
       const { data } = await supabase.from('colleges').select('*');
-      allColleges = data || [];
+      if (data && data.length > 0) {
+        allColleges = data;
+      } else {
+        allColleges = mockDB.colleges;
+      }
     } else {
       allColleges = mockDB.colleges;
     }

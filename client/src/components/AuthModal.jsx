@@ -1,44 +1,30 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { X, Sparkles, User, Mail, Lock, GraduationCap, MapPin, DollarSign } from 'lucide-react';
+import { X, Sparkles, LogIn, UserPlus, Shield, UserCheck, AlertCircle } from 'lucide-react';
 
-export default function AuthModal({ onClose }) {
-  const { login, signup } = useAuth();
-  const [isLogin, setIsLogin] = useState(true);
+export default function AuthModal({ initialMode = 'login', onClose }) {
+  const { login, signup, isSupabaseAuth } = useAuth();
+  const [isLogin, setIsLogin] = useState(initialMode === 'login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [role, setRole] = useState('student');
+  const [grade, setGrade] = useState('Grade 11 (Science)');
+  const [location, setLocation] = useState('Bengaluru, KA');
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    role: 'student',
-    grade: 'Grade 11 (Science)',
-    location: 'Mumbai, MH',
-    budgetMin: 50000,
-    budgetMax: 400000,
-    uncertainty: 4
-  });
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
+    setLoading(true);
 
     try {
       if (isLogin) {
-        await login(formData.email || 'student@example.com', formData.password || 'password');
+        await login(email, password);
       } else {
-        await signup({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          role: formData.role,
-          grade: formData.grade,
-          location: formData.location,
-          budgetRange: { min: Number(formData.budgetMin), max: Number(formData.budgetMax) },
-          uncertainty: Number(formData.uncertainty)
-        });
+        await signup({ name, email, password, role, grade, location });
       }
       onClose();
     } catch (err) {
@@ -48,165 +34,173 @@ export default function AuthModal({ onClose }) {
     }
   };
 
-  const handleQuickDemo = async (roleType) => {
+  const handleDemoLogin = async (demoEmail) => {
+    setError('');
     setLoading(true);
     try {
-      if (roleType === 'parent') {
-        await login('parent@example.com', 'password');
-      } else {
-        await login('student@example.com', 'password');
-      }
+      await login(demoEmail, 'password');
       onClose();
     } catch (err) {
-      setError('Demo login failed');
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
-      <div className="glass-card w-full max-w-md p-6 relative shadow-2xl border-slate-700/80">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+      <div className="glass-card max-w-md w-full p-6 sm:p-8 relative space-y-6 border-blue-500/30 shadow-2xl animate-fade-in">
         
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
+          className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="text-center mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-3 text-blue-400">
+        {/* Modal Header */}
+        <div className="text-center space-y-2">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center mx-auto shadow-lg shadow-blue-500/30">
             <Sparkles className="w-6 h-6" />
           </div>
-          <h3 className="text-xl font-bold text-white">
+          <h3 className="text-2xl font-bold text-white">
             {isLogin ? 'Welcome Back to CareerX' : 'Create Student Account'}
           </h3>
-          <p className="text-xs text-slate-400 mt-1">
-            {isLogin ? 'Sign in to access your assessment & roadmap' : 'Start your personalized AI career journey today'}
+          <p className="text-xs text-slate-400">
+            {isLogin ? 'Sign in to access your assessment reports & roadmap' : 'Get personalized AI psychometric evaluation & college match'}
           </p>
         </div>
 
+        {/* Auth Mode Toggle Tabs */}
+        <div className="flex bg-slate-900/80 p-1 rounded-xl border border-slate-800">
+          <button
+            type="button"
+            onClick={() => setIsLogin(true)}
+            className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+              isLogin ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            Sign In
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsLogin(false)}
+            className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+              !isLogin ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            Register
+          </button>
+        </div>
+
         {error && (
-          <div className="mb-4 p-3 bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs rounded-xl">
-            {error}
+          <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
           </div>
         )}
 
-        {/* Quick Demo Pre-fill Bar */}
-        <div className="mb-5 p-3 bg-slate-800/60 rounded-xl border border-slate-700/60 text-center">
-          <span className="text-[11px] text-slate-400 font-medium block mb-2">⚡ 1-Click Instant Demo Login</span>
-          <div className="flex gap-2 justify-center">
-            <button
-              onClick={() => handleQuickDemo('student')}
-              disabled={loading}
-              className="text-xs px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 rounded-lg cursor-pointer font-medium"
-            >
-              Student Demo
-            </button>
-            <button
-              onClick={() => handleQuickDemo('parent')}
-              disabled={loading}
-              className="text-xs px-3 py-1.5 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 rounded-lg cursor-pointer font-medium"
-            >
-              Parent Demo
-            </button>
-          </div>
-        </div>
-
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Full Name</label>
-              <div className="relative">
-                <User className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+            <>
+              <div>
+                <label className="text-xs font-bold text-slate-300 block mb-1">Full Name</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Aarav Sharma"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
                 />
               </div>
-            </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-300 block mb-1">Account Role</label>
+                  <select
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500"
+                  >
+                    <option value="student">Student</option>
+                    <option value="parent">Parent / Guardian</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-300 block mb-1">Grade / Stream</label>
+                  <select
+                    value={grade}
+                    onChange={(e) => setGrade(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500"
+                  >
+                    <option value="Grade 9-10">Grade 9 - 10</option>
+                    <option value="Grade 11 (Science)">Grade 11 (Science)</option>
+                    <option value="Grade 11 (Commerce)">Grade 11 (Commerce)</option>
+                    <option value="Grade 12">Grade 12 / Pre-Univ</option>
+                    <option value="Undergraduate">College Student</option>
+                  </select>
+                </div>
+              </div>
+            </>
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
-            <div className="relative">
-              <Mail className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
-              <input
-                type="email"
-                required
-                placeholder="student@example.com"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
-              />
-            </div>
+            <label className="text-xs font-bold text-slate-300 block mb-1">Email Address</label>
+            <input
+              type="email"
+              required
+              placeholder="student@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+            />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">Password</label>
-            <div className="relative">
-              <Lock className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
-              <input
-                type="password"
-                required
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
-              />
-            </div>
+            <label className="text-xs font-bold text-slate-300 block mb-1">Password</label>
+            <input
+              type="password"
+              required
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+            />
           </div>
-
-          {!isLogin && (
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Grade / Stream</label>
-                <select
-                  value={formData.grade}
-                  onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
-                >
-                  <option value="Grade 9-10">Grade 9–10</option>
-                  <option value="Grade 11 (Science)">Grade 11 (Science)</option>
-                  <option value="Grade 12 (Commerce)">Grade 12 (Commerce)</option>
-                  <option value="Undergraduate">Undergraduate</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Location</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Mumbai, MH"
-                  value={formData.location}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
-                />
-              </div>
-            </div>
-          )}
 
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary w-full text-xs py-3 mt-4"
+            className="btn-primary w-full py-3 text-xs justify-center font-bold"
           >
-            {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Complete Setup & Enter')}
+            {loading ? 'Authenticating...' : isLogin ? 'Sign In to Dashboard' : 'Complete Registration'}
           </button>
         </form>
 
-        <div className="mt-4 text-center">
-          <button
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-xs text-blue-400 hover:underline font-medium"
-          >
-            {isLogin ? "Don't have an account? Sign Up" : 'Already registered? Sign In'}
-          </button>
+        {/* Quick Demo Instant Logins */}
+        <div className="pt-3 border-t border-slate-800/80 space-y-2">
+          <span className="text-[11px] font-bold text-slate-400 block text-center uppercase tracking-wider">
+            Quick 1-Click Demo Login
+          </span>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => handleDemoLogin('student@example.com')}
+              className="btn-secondary text-[11px] py-2 justify-center"
+            >
+              <UserCheck className="w-3.5 h-3.5 text-blue-400" /> Demo Student
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDemoLogin('parent@example.com')}
+              className="btn-secondary text-[11px] py-2 justify-center"
+            >
+              <Shield className="w-3.5 h-3.5 text-purple-400" /> Demo Parent
+            </button>
+          </div>
         </div>
 
       </div>

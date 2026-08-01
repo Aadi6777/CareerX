@@ -8,7 +8,11 @@ router.get('/all', async (req, res) => {
     let exams = [];
     if (!isMock && supabase) {
       const { data } = await supabase.from('exam_recommendations').select('*').order('relevance_score', { ascending: false });
-      exams = data || [];
+      if (data && data.length > 0) {
+        exams = data;
+      } else {
+        exams = mockDB.exam_recommendations;
+      }
     } else {
       exams = mockDB.exam_recommendations;
     }
@@ -23,7 +27,11 @@ router.get('/recommendations/:userId', authenticateToken, async (req, res) => {
     let exams = [];
     if (!isMock && supabase) {
       const { data } = await supabase.from('exam_recommendations').select('*').order('relevance_score', { ascending: false });
-      exams = data || [];
+      if (data && data.length > 0) {
+        exams = data;
+      } else {
+        exams = mockDB.exam_recommendations;
+      }
     } else {
       exams = mockDB.exam_recommendations;
     }

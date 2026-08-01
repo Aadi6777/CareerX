@@ -4,14 +4,15 @@ import { useAuth } from '../context/AuthContext';
 import { 
   Compass, LayoutDashboard, Brain, BarChart2, MapPin, 
   BookOpen, MessageSquare, Briefcase, Users, ShieldAlert, 
-  LogOut, UserCheck, Menu, X, Sparkles 
+  LogOut, UserCheck, Menu, X, Sparkles, LogIn 
 } from 'lucide-react';
 import AuthModal from './AuthModal';
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, logout, isSupabaseAuth } = useAuth();
   const location = useLocation();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('login'); // 'login' | 'signup'
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -33,6 +34,11 @@ export default function Navbar() {
     navLinks.push({ path: '/admin', label: 'Admin Portal', icon: ShieldAlert });
   }
 
+  const handleOpenAuth = (mode) => {
+    setAuthMode(mode);
+    setIsAuthOpen(true);
+  };
+
   return (
     <>
       <nav className="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/80 px-4 lg:px-8 py-3">
@@ -47,8 +53,9 @@ export default function Navbar() {
               <span className="text-xl font-extrabold bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent tracking-tight">
                 CareerX
               </span>
-              <span className="block text-[10px] text-blue-400 font-semibold tracking-wider uppercase -mt-1">
+              <span className="block text-[10px] text-blue-400 font-semibold tracking-wider uppercase -mt-1 flex items-center gap-1">
                 AI Companion
+                {isSupabaseAuth && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" title="Connected to Supabase Auth"></span>}
               </span>
             </div>
           </Link>
@@ -92,13 +99,22 @@ export default function Navbar() {
                 </button>
               </div>
             ) : (
-              <button
-                onClick={() => setIsAuthOpen(true)}
-                className="btn-primary text-xs"
-              >
-                <Sparkles className="w-4 h-4" />
-                Get Started
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleOpenAuth('login')}
+                  className="btn-secondary text-xs px-3.5 py-2"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  Sign In
+                </button>
+                <button
+                  onClick={() => handleOpenAuth('signup')}
+                  className="btn-primary text-xs px-4 py-2"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Register
+                </button>
+              </div>
             )}
 
             {/* Mobile Menu Toggle */}
@@ -134,7 +150,7 @@ export default function Navbar() {
       </nav>
 
       {/* Auth Modal */}
-      {isAuthOpen && <AuthModal onClose={() => setIsAuthOpen(false)} />}
+      {isAuthOpen && <AuthModal initialMode={authMode} onClose={() => setIsAuthOpen(false)} />}
     </>
   );
 }
