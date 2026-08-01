@@ -24,8 +24,8 @@ function filterCollegesByLocationAndBudget(colleges, options = {}) {
       return { ...college, distanceKm: distance };
     })
     .filter(college => {
-      if (maxDistanceKm && college.distanceKm !== null && college.distanceKm > maxDistanceKm) return false;
-      if (maxBudget && college.tuition_min > maxBudget) return false;
+      if (maxDistanceKm && !isNaN(maxDistanceKm) && college.distanceKm !== null && college.distanceKm > maxDistanceKm) return false;
+      if (maxBudget && !isNaN(maxBudget) && college.tuition_min > maxBudget) return false;
       if (typeFilter && typeFilter !== 'All' && college.type !== typeFilter) return false;
       return true;
     })
