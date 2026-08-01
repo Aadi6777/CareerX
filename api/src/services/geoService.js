@@ -17,21 +17,24 @@ function filterCollegesByLocationAndBudget(colleges, options = {}) {
 
   return colleges
     .map(college => {
+      const cLat = parseFloat(college.latitude);
+      const cLng = parseFloat(college.longitude);
       let distance = null;
-      if (userLat && userLng && college.latitude && college.longitude) {
-        distance = calculateDistanceKm(userLat, userLng, college.latitude, college.longitude);
+      if (userLat && userLng && !isNaN(cLat) && !isNaN(cLng)) {
+        distance = calculateDistanceKm(userLat, userLng, cLat, cLng);
       }
-      return { ...college, distanceKm: distance };
+      return { ...college, latitude: cLat, longitude: cLng, distanceKm: distance };
     })
     .filter(college => {
+      const tuitionMin = parseFloat(college.tuition_min);
       if (maxDistanceKm && !isNaN(maxDistanceKm) && college.distanceKm !== null && college.distanceKm > maxDistanceKm) return false;
-      if (maxBudget && !isNaN(maxBudget) && college.tuition_min > maxBudget) return false;
+      if (maxBudget && !isNaN(maxBudget) && !isNaN(tuitionMin) && tuitionMin > maxBudget) return false;
       if (typeFilter && typeFilter !== 'All' && college.type !== typeFilter) return false;
       return true;
     })
     .sort((a, b) => {
       if (a.distanceKm !== null && b.distanceKm !== null) return a.distanceKm - b.distanceKm;
-      return a.ranking - b.ranking;
+      return (a.ranking || 99) - (b.ranking || 99);
     });
 }
 

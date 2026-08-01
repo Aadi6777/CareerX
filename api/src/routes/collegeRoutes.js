@@ -7,11 +7,11 @@ router.get('/nearby', async (req, res) => {
   try {
     const lat = req.query.lat ? parseFloat(req.query.lat) : 12.9716; // Default Bengaluru
     const lng = req.query.lng ? parseFloat(req.query.lng) : 77.5946;
-    const maxDistanceKm = req.query.radiusKm ? parseFloat(req.query.radiusKm) : 2000;
+    const maxDistanceKm = req.query.radiusKm ? parseFloat(req.query.radiusKm) : 3000;
     const maxBudget = req.query.budget ? parseFloat(req.query.budget) : null;
     const typeFilter = req.query.type || 'All';
 
-    let allColleges = [];
+    let allColleges = [...mockDB.colleges];
     if (!isMock && supabase) {
       try {
         const { data } = await supabase.from('colleges').select('*');
@@ -19,14 +19,10 @@ router.get('/nearby', async (req, res) => {
           const names = new Set(data.map(c => c.name));
           const newMockColleges = mockDB.colleges.filter(m => !names.has(m.name));
           allColleges = [...data, ...newMockColleges];
-        } else {
-          allColleges = mockDB.colleges;
         }
       } catch (err) {
-        allColleges = mockDB.colleges;
+        console.warn('Supabase fetch fallback to mock colleges:', err);
       }
-    } else {
-      allColleges = mockDB.colleges;
     }
 
     const filtered = filterCollegesByLocationAndBudget(allColleges, { userLat: lat, userLng: lng, maxDistanceKm, maxBudget, typeFilter });
@@ -39,7 +35,7 @@ router.get('/nearby', async (req, res) => {
 router.get('/search', async (req, res) => {
   try {
     const query = (req.query.q || '').toLowerCase();
-    let allColleges = [];
+    let allColleges = [...mockDB.colleges];
 
     if (!isMock && supabase) {
       try {
@@ -48,14 +44,8 @@ router.get('/search', async (req, res) => {
           const names = new Set(data.map(c => c.name));
           const newMockColleges = mockDB.colleges.filter(m => !names.has(m.name));
           allColleges = [...data, ...newMockColleges];
-        } else {
-          allColleges = mockDB.colleges;
         }
-      } catch (err) {
-        allColleges = mockDB.colleges;
-      }
-    } else {
-      allColleges = mockDB.colleges;
+      } catch (err) {}
     }
 
     const results = allColleges.filter(c => 
