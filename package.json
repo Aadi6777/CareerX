@@ -11,6 +11,15 @@
     "install:all": "npm install && cd server && npm install && cd client && npm install",
     "test": "node scripts/test-api.js"
   },
+  "dependencies": {
+    "@google/generative-ai": "^0.19.0",
+    "@supabase/supabase-js": "^2.45.4",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2"
+  },
   "devDependencies": {
     "concurrently": "^8.2.2"
   }
