@@ -118,6 +118,35 @@ export function AuthProvider({ children }) {
     return userData;
   };
 
+  const loginWithGoogle = async (googleEmailInput) => {
+    if (supabaseClient) {
+      const { data, error } = await supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin }
+      });
+      if (error) throw error;
+      return data;
+    }
+
+    const email = googleEmailInput || 'student.google@gmail.com';
+    const googleUser = {
+      id: `usr_google_${Date.now()}`,
+      email: email,
+      name: email.split('@')[0].replace('.', ' ').toUpperCase(),
+      role: 'student',
+      grade: 'Grade 11 (Science)',
+      location: 'Bengaluru, KA',
+      provider: 'google',
+      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`
+    };
+
+    const mockToken = `google_oauth_token_${Date.now()}`;
+    localStorage.setItem('careerx_token', mockToken);
+    setToken(mockToken);
+    setUser(googleUser);
+    return googleUser;
+  };
+
   const updateOnboarding = async (data) => {
     await API.patch('/auth/onboarding', data);
     setUser(prev => ({ ...prev, ...data }));
@@ -133,7 +162,18 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated: !!user, isLoading, login, signup, updateOnboarding, logout, isSupabaseAuth: !!supabaseClient }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      token, 
+      isAuthenticated: !!user, 
+      isLoading, 
+      login, 
+      signup, 
+      loginWithGoogle, 
+      updateOnboarding, 
+      logout, 
+      isSupabaseAuth: !!supabaseClient 
+    }}>
       {children}
     </AuthContext.Provider>
   );

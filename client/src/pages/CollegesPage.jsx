@@ -15,10 +15,11 @@ L.Icon.Default.mergeOptions({
 export default function CollegesPage() {
   const [colleges, setColleges] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   
-  // Center default over South India (Bangalore & Tamil Nadu)
-  const [userLocation, setUserLocation] = useState({ lat: 12.9716, lng: 77.5946, label: 'Bengaluru / Tamil Nadu' });
-  const [radiusKm, setRadiusKm] = useState(600);
+  // Center default over India
+  const [userLocation, setUserLocation] = useState({ lat: 12.9716, lng: 77.5946, label: 'All India' });
+  const [radiusKm, setRadiusKm] = useState(2500);
   const [maxBudget, setMaxBudget] = useState(600000);
   const [typeFilter, setTypeFilter] = useState('All');
   const [selectedRegion, setSelectedRegion] = useState('All');
@@ -27,13 +28,25 @@ export default function CollegesPage() {
     async function fetchColleges() {
       setLoading(true);
       try {
-        const res = await API.get(`/colleges/nearby?lat=${userLocation.lat}&lng=${userLocation.lng}&radiusKm=${radiusKm}&budget=${maxBudget}&type=${typeFilter}`);
+        let url = `/colleges/nearby?lat=${userLocation.lat}&lng=${userLocation.lng}&radiusKm=${radiusKm}&budget=${maxBudget}&type=${typeFilter}`;
+        if (searchQuery.trim()) {
+          url = `/colleges/search?q=${encodeURIComponent(searchQuery.trim())}`;
+        }
+        const res = await API.get(url);
         let fetched = res.data.colleges || [];
+        
         if (selectedRegion === 'Bangalore') {
-          fetched = fetched.filter(c => c.state === 'Karnataka' || c.city === 'Bengaluru');
+          fetched = fetched.filter(c => c.state === 'Karnataka' || c.city === 'Bengaluru' || c.city === 'Manipal' || c.city === 'Mangaluru');
         } else if (selectedRegion === 'Tamil Nadu') {
           fetched = fetched.filter(c => c.state === 'Tamil Nadu');
+        } else if (selectedRegion === 'National') {
+          fetched = fetched.filter(c => c.state !== 'Karnataka' && c.state !== 'Tamil Nadu');
         }
+
+        if (maxBudget) {
+          fetched = fetched.filter(c => c.tuition_min <= maxBudget);
+        }
+
         setColleges(fetched);
       } catch (err) {
         console.error('Failed to fetch colleges:', err);
@@ -42,7 +55,7 @@ export default function CollegesPage() {
       }
     }
     fetchColleges();
-  }, [userLocation, radiusKm, maxBudget, typeFilter, selectedRegion]);
+  }, [userLocation, radiusKm, maxBudget, typeFilter, selectedRegion, searchQuery]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
@@ -52,78 +65,99 @@ export default function CollegesPage() {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold mb-2">
             <MapPin className="w-4 h-4 text-blue-400" />
-            <span>Interactive Leaflet Map — Bangalore & Tamil Nadu Institutes</span>
+            <span>Interactive Leaflet Map — Pan-India Top Higher Ed Institutes</span>
           </div>
           <h1 className="text-3xl font-extrabold text-white">College Geo-Discovery & Matching</h1>
           <p className="text-xs text-slate-400">
-            Locate top matched colleges across Bengaluru, Chennai, Coimbatore, Vellore & Trichy by tuition budget & accreditation.
+            Locate top matched engineering, medical, law & management colleges across Bengaluru, Tamil Nadu, Mumbai, Delhi & Hyderabad by tuition budget & accreditation.
           </p>
         </div>
 
         {/* Region Filter Pills */}
-        <div className="flex items-center gap-2">
-          {['All', 'Bangalore', 'Tamil Nadu'].map(region => (
+        <div className="flex flex-wrap items-center gap-2">
+          {[
+            { id: 'All', label: 'All India' },
+            { id: 'Bangalore', label: 'Bangalore & KA' },
+            { id: 'Tamil Nadu', label: 'Tamil Nadu' },
+            { id: 'National', label: 'Other Top National' }
+          ].map(region => (
             <button
-              key={region}
-              onClick={() => setSelectedRegion(region)}
+              key={region.id}
+              onClick={() => setSelectedRegion(region.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer transition-all ${
-                selectedRegion === region
+                selectedRegion === region.id
                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
                   : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-white'
               }`}
             >
-              {region}
+              {region.label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Filter Sliders */}
-      <div className="glass-card p-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
+      {/* Search & Filter Controls */}
+      <div className="glass-card p-6 space-y-4">
         
-        <div className="space-y-2">
-          <div className="flex justify-between text-xs font-bold text-slate-300">
-            <span>Distance Radius:</span>
-            <span className="text-blue-400">{radiusKm} km</span>
-          </div>
+        {/* Search Bar Input */}
+        <div>
+          <label className="text-xs font-bold text-slate-300 block mb-1.5">Search Colleges, Cities, or Degree Programs</label>
           <input
-            type="range"
-            min="50"
-            max="1500"
-            step="50"
-            value={radiusKm}
-            onChange={(e) => setRadiusKm(Number(e.target.value))}
-            className="w-full accent-blue-500 cursor-pointer"
+            type="text"
+            placeholder="e.g. RVCE, IIT Madras, Computer Science, Bengaluru, Chennai, Medical..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 font-medium"
           />
         </div>
 
-        <div className="space-y-2">
-          <div className="flex justify-between text-xs font-bold text-slate-300">
-            <span>Max Tuition / Year:</span>
-            <span className="text-emerald-400">₹{maxBudget.toLocaleString()}</span>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-2 border-t border-slate-800/80">
+          
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs font-bold text-slate-300">
+              <span>Distance Radius:</span>
+              <span className="text-blue-400">{radiusKm} km</span>
+            </div>
+            <input
+              type="range"
+              min="50"
+              max="3000"
+              step="100"
+              value={radiusKm}
+              onChange={(e) => setRadiusKm(Number(e.target.value))}
+              className="w-full accent-blue-500 cursor-pointer"
+            />
           </div>
-          <input
-            type="range"
-            min="10000"
-            max="800000"
-            step="20000"
-            value={maxBudget}
-            onChange={(e) => setMaxBudget(Number(e.target.value))}
-            className="w-full accent-emerald-500 cursor-pointer"
-          />
-        </div>
 
-        <div className="space-y-2">
-          <label className="text-xs font-bold text-slate-300 block">Institution Type</label>
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-700 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 cursor-pointer font-semibold"
-          >
-            <option value="All">All College Types</option>
-            <option value="Government">Government Institutes</option>
-            <option value="Private">Private Universities</option>
-          </select>
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs font-bold text-slate-300">
+              <span>Max Tuition / Year:</span>
+              <span className="text-emerald-400">₹{maxBudget.toLocaleString()}</span>
+            </div>
+            <input
+              type="range"
+              min="10000"
+              max="800000"
+              step="20000"
+              value={maxBudget}
+              onChange={(e) => setMaxBudget(Number(e.target.value))}
+              className="w-full accent-emerald-500 cursor-pointer"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-300 block">Institution Type</label>
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 cursor-pointer font-semibold"
+            >
+              <option value="All">All College Types</option>
+              <option value="Government">Government Institutes</option>
+              <option value="Private">Private Universities</option>
+            </select>
+          </div>
+
         </div>
 
       </div>

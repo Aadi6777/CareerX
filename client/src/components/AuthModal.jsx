@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { X, Sparkles, LogIn, UserPlus, Shield, UserCheck, AlertCircle } from 'lucide-react';
 
 export default function AuthModal({ initialMode = 'login', onClose }) {
-  const { login, signup, isSupabaseAuth } = useAuth();
+  const { login, signup, loginWithGoogle, isSupabaseAuth } = useAuth();
   const [isLogin, setIsLogin] = useState(initialMode === 'login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -11,6 +11,9 @@ export default function AuthModal({ initialMode = 'login', onClose }) {
   const [role, setRole] = useState('student');
   const [grade, setGrade] = useState('Grade 11 (Science)');
   const [location, setLocation] = useState('Bengaluru, KA');
+  
+  const [showGoogleMailPrompt, setShowGoogleMailPrompt] = useState(false);
+  const [googleMailInput, setGoogleMailInput] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -29,6 +32,19 @@ export default function AuthModal({ initialMode = 'login', onClose }) {
       onClose();
     } catch (err) {
       setError(err.response?.data?.error || err.message || 'Authentication failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleAuth = async (emailInput) => {
+    setError('');
+    setLoading(true);
+    try {
+      await loginWithGoogle(emailInput || googleMailInput);
+      onClose();
+    } catch (err) {
+      setError(err.message || 'Google Authentication failed');
     } finally {
       setLoading(false);
     }
@@ -92,6 +108,57 @@ export default function AuthModal({ initialMode = 'login', onClose }) {
           >
             Register
           </button>
+        </div>
+
+        {/* Google Sign In Button */}
+        <div className="space-y-2">
+          <button
+            type="button"
+            onClick={() => {
+              if (isSupabaseAuth) {
+                handleGoogleAuth();
+              } else {
+                setShowGoogleMailPrompt(!showGoogleMailPrompt);
+              }
+            }}
+            disabled={loading}
+            className="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-md cursor-pointer"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.29v3.15C3.26 21.3 7.31 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.29C.47 8.21 0 10.05 0 12s.47 3.79 1.29 5.42l3.99-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.58l3.99 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+            </svg>
+            <span>Continue with Google Mail</span>
+          </button>
+
+          {showGoogleMailPrompt && (
+            <div className="p-3 bg-slate-900 border border-blue-500/30 rounded-xl space-y-2 animate-fade-in">
+              <label className="text-[11px] text-slate-300 font-bold block">Enter Google Mail ID:</label>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  placeholder="user@gmail.com"
+                  value={googleMailInput}
+                  onChange={(e) => setGoogleMailInput(e.target.value)}
+                  className="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleGoogleAuth(googleMailInput || 'student@gmail.com')}
+                  className="btn-primary text-xs py-1.5 px-3"
+                >
+                  Sign In
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="relative flex items-center justify-center py-1">
+            <div className="border-t border-slate-800 w-full"></div>
+            <span className="bg-slate-950 px-2 text-[10px] text-slate-500 font-bold uppercase tracking-wider absolute">or email</span>
+          </div>
         </div>
 
         {error && (
