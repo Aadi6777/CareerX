@@ -111,6 +111,28 @@ CREATE TABLE IF NOT EXISTS public.job_market_data (
 );
 
 -- ========================================================
+-- ENABLE ROW LEVEL SECURITY (RLS) & POLICIES
+-- ========================================================
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.assessment_results ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.skill_gaps ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.roadmaps ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.exam_recommendations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.colleges ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.mentor_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.job_market_data ENABLE ROW LEVEL SECURITY;
+
+-- Allow public read & write access for API operations
+CREATE POLICY "Allow public access for users" ON public.users FOR ALL USING (true);
+CREATE POLICY "Allow public access for assessment_results" ON public.assessment_results FOR ALL USING (true);
+CREATE POLICY "Allow public access for skill_gaps" ON public.skill_gaps FOR ALL USING (true);
+CREATE POLICY "Allow public access for roadmaps" ON public.roadmaps FOR ALL USING (true);
+CREATE POLICY "Allow public access for exam_recommendations" ON public.exam_recommendations FOR ALL USING (true);
+CREATE POLICY "Allow public access for colleges" ON public.colleges FOR ALL USING (true);
+CREATE POLICY "Allow public access for mentor_sessions" ON public.mentor_sessions FOR ALL USING (true);
+CREATE POLICY "Allow public access for job_market_data" ON public.job_market_data FOR ALL USING (true);
+
+-- ========================================================
 -- SEED DATA (EXAMS, COLLEGES, JOB MARKET)
 -- ========================================================
 
