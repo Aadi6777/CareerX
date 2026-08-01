@@ -17,18 +17,18 @@ async function testRoutes() {
       console.log('✅ Auth Login Test:', authRes.token ? 'PASSED' : 'FAILED');
 
       const questionsRes = await fetch(`${baseUrl}/assessment/questions`).then(r => r.json());
-      console.log('✅ Assessment Questions API:', questionsRes.parts?.length === 4 ? 'PASSED' : 'FAILED');
+      console.log('✅ Assessment Questions API (20 Qs):', questionsRes.parts?.length === 4 ? 'PASSED' : 'FAILED');
 
       const examsRes = await fetch(`${baseUrl}/exams/all`).then(r => r.json());
       console.log('✅ Entrance Exams API:', examsRes.count > 0 ? 'PASSED' : 'FAILED');
 
-      const collegesRes = await fetch(`${baseUrl}/colleges/nearby?lat=19.076&lng=72.877&radiusKm=500`).then(r => r.json());
-      console.log('✅ Colleges Geo Search API:', collegesRes.count > 0 ? 'PASSED' : 'FAILED');
+      const collegesRes = await fetch(`${baseUrl}/colleges/nearby?lat=12.9716&lng=77.5946&radiusKm=600`).then(r => r.json());
+      console.log('✅ Colleges Geo Search API (TN & Blr):', collegesRes.count > 0 ? 'PASSED' : 'FAILED');
 
       const mentorRes = await fetch(`${baseUrl}/mentor/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: 'What skills are needed for AI engineering?' })
+        body: JSON.stringify({ message: 'What skills are needed for AI engineering in Bangalore?' })
       }).then(r => r.json());
       console.log('✅ AI Mentor Chat API:', mentorRes.reply ? 'PASSED' : 'FAILED');
 

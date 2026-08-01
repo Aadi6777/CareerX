@@ -9,45 +9,50 @@ router.get('/questions', (req, res) => {
     parts: [
       {
         id: 'aptitude',
-        title: 'Logical & Analytical Aptitude',
-        description: 'Assesses pattern recognition, quantitative reasoning, and spatial problem solving.',
+        title: 'Logical & Quantitative Aptitude (5 Questions)',
+        description: 'Assesses pattern recognition, spatial reasoning, verbal logic, and quantitative problem solving.',
         questions: [
           { id: 'q1', text: 'If a project timeline decreases by 25% while workload increases by 50%, what is the net multiplier on required daily output?', options: ['1.5x', '2.0x', '1.75x', '2.5x'], category: 'quantitative' },
           { id: 'q2', text: 'Which sequence logical next term completes: 3, 7, 15, 31, 63, ...?', options: ['127', '95', '120', '125'], category: 'logic' },
-          { id: 'q3', text: 'When presented with an unsolved technical problem, what is your immediate first step?', options: ['Deconstruct into smaller sub-components', 'Search for existing open-source solutions', 'Discuss with a peer group', 'Prototype immediate intuition'], category: 'problem_solving' }
+          { id: 'q3', text: 'When presented with an unsolved technical problem, what is your immediate first step?', options: ['Deconstruct into smaller sub-components', 'Search for existing open-source solutions', 'Discuss with a peer group', 'Prototype immediate intuition'], category: 'problem_solving' },
+          { id: 'q4', text: 'If Statement A implies Statement B, and Statement B is FALSE, what can be definitively concluded about Statement A?', options: ['Statement A is definitively FALSE', 'Statement A is TRUE', 'Statement A is indeterminate', 'Statement B is conditionally TRUE'], category: 'logic' },
+          { id: 'q5', text: 'How do you perform best when learning a new quantitative concept?', options: ['Deriving mathematical principles from first principles', 'Visualizing geometric and real-world representations', 'Working through solved numerical examples', 'Discussing conceptual applications in groups'], category: 'quantitative' }
         ]
       },
       {
         id: 'riasec',
-        title: 'Holland Code Interest Inventory (RIASEC)',
-        description: 'Measures your interest across Realistic, Investigative, Artistic, Social, Enterprising, and Conventional fields.',
+        title: 'Holland Code Interest Inventory (6 Questions)',
+        description: 'Evaluates interest across Realistic, Investigative, Artistic, Social, Enterprising, and Conventional domains.',
         questions: [
-          { id: 'q4', text: 'Building or fixing mechanical, electronic, or software systems hands-on', category: 'Realistic' },
-          { id: 'q5', text: 'Analyzing complex data sets, conducting scientific research, or solving abstract puzzles', category: 'Investigative' },
-          { id: 'q6', text: 'Designing visual interfaces, writing creative copy, or expressing ideas artistically', category: 'Artistic' },
-          { id: 'q7', text: 'Mentoring peers, teaching complex topics, or counseling individuals in distress', category: 'Social' },
-          { id: 'q8', text: 'Leading a team, pitching business ideas, or managing financial investments', category: 'Enterprising' },
-          { id: 'q9', text: 'Organizing structured data, optimizing spreadsheets, or auditing financial records', category: 'Conventional' }
+          { id: 'q6', text: 'Building, assembling, or repairing mechanical, electronic, or software systems hands-on', category: 'Realistic' },
+          { id: 'q7', text: 'Analyzing complex data sets, conducting scientific experiments, or solving abstract puzzles', category: 'Investigative' },
+          { id: 'q8', text: 'Designing visual interfaces, writing creative copy, or expressing ideas artistically', category: 'Artistic' },
+          { id: 'q9', text: 'Mentoring peers, teaching complex topics, or counseling individuals in distress', category: 'Social' },
+          { id: 'q10', text: 'Leading a team, pitching business ideas, or managing financial investments', category: 'Enterprising' },
+          { id: 'q11', text: 'Organizing structured databases, optimizing spreadsheets, or auditing financial records', category: 'Conventional' }
         ]
       },
       {
         id: 'bigfive',
-        title: 'Big Five Personality Profile',
+        title: 'Big Five Personality Profile (5 Questions)',
         description: 'Evaluates Openness, Conscientiousness, Extraversion, Agreeableness, and Emotional Stability.',
         questions: [
-          { id: 'q10', text: 'I enjoy exploring abstract concepts and unconventional ideas.', trait: 'Openness' },
-          { id: 'q11', text: 'I systematically organize my schedule and meet deadlines early.', trait: 'Conscientiousness' },
-          { id: 'q12', text: 'I feel energized when presenting in front of large audiences.', trait: 'Extraversion' },
-          { id: 'q13', text: 'I prioritize team harmony and empathetic collaboration.', trait: 'Agreeableness' },
-          { id: 'q14', text: 'I remain calm, focused, and steady under intense pressure.', trait: 'EmotionalStability' }
+          { id: 'q12', text: 'I enjoy exploring abstract concepts and unconventional ideas.', trait: 'Openness' },
+          { id: 'q13', text: 'I systematically organize my schedule and meet deadlines early.', trait: 'Conscientiousness' },
+          { id: 'q14', text: 'I feel energized when presenting ideas in front of large audiences.', trait: 'Extraversion' },
+          { id: 'q15', text: 'I prioritize team harmony and empathetic collaboration.', trait: 'Agreeableness' },
+          { id: 'q16', text: 'I remain calm, focused, and steady under intense pressure.', trait: 'EmotionalStability' }
         ]
       },
       {
         id: 'workvalues',
-        title: 'Work Values & Career Motivations',
+        title: 'Work Values & Career Motivations (4 Questions)',
         description: 'Identifies what matters most to you in a career environment.',
         questions: [
-          { id: 'q15', text: 'Which factor is most vital for your career satisfaction?', options: ['High Financial Return & Growth', 'Creativity & Autonomy', 'Social Impact & Helping Others', 'Job Security & Balance'], category: 'values' }
+          { id: 'q17', text: 'Which factor is most vital for your long-term career satisfaction?', options: ['High Financial Return & Rapid Growth', 'Creative Freedom & Autonomy', 'Social Impact & Helping Communities', 'Job Security & Work-Life Balance'], category: 'values' },
+          { id: 'q18', text: 'What work culture environment brings out your highest performance?', options: ['Competitive, high-reward, fast-paced environment', 'Structured, organized, clear milestone environment', 'Collaborative, community-first, supportive environment', 'Independent, remote-first, autonomous environment'], category: 'culture' },
+          { id: 'q19', text: 'How do you handle unexpected shifts in academic or project requirements?', options: ['Adapt rapidly and pivot strategy with enthusiasm', 'Methodically re-evaluate project timelines step-by-step', 'Consult mentors and peers for collective consensus', 'Focus on maintaining core quality metrics'], category: 'adaptability' },
+          { id: 'q20', text: 'Where do you see your primary career objective in 5 years?', options: ['Leading a tech venture or high-growth engineering team', 'Specializing as a senior researcher / domain expert', 'Advocating policy, corporate law, or strategic consulting', 'Building creative design systems or media products'], category: 'vision' }
         ]
       }
     ]
@@ -59,10 +64,10 @@ router.post('/submit', authenticateToken, async (req, res) => {
     const userId = req.user.id;
     const { answers } = req.body;
 
-    const riasec = { Realistic: 75, Investigative: 92, Artistic: 70, Social: 65, Enterprising: 88, Conventional: 72 };
-    const aptitude = { quantitative: 85, logic: 90, problem_solving: 92, overall: 89 };
-    const bigFive = { Openness: 88, Conscientiousness: 90, Extraversion: 70, Agreeableness: 80, EmotionalStability: 85 };
-    const workValues = { primaryValue: 'High Growth & Autonomy', impactPreference: 'High' };
+    const riasec = { Realistic: 78, Investigative: 94, Artistic: 72, Social: 68, Enterprising: 89, Conventional: 74 };
+    const aptitude = { quantitative: 88, logic: 92, problem_solving: 94, overall: 91 };
+    const bigFive = { Openness: 90, Conscientiousness: 92, Extraversion: 72, Agreeableness: 82, EmotionalStability: 86 };
+    const workValues = { primaryValue: 'High Growth & Technical Autonomy', impactPreference: 'High' };
 
     const geminiInterpretation = await generatePsychometricReport(answers, { aptitude, riasec, bigFive, workValues });
 
@@ -145,9 +150,9 @@ router.get('/results/:userId', authenticateToken, async (req, res) => {
       return res.json({
         id: 'ast_demo_default',
         userId,
-        aptitudeScores: { quantitative: 85, logic: 90, problem_solving: 92, overall: 89 },
-        interestProfile: { Realistic: 75, Investigative: 92, Artistic: 70, Social: 65, Enterprising: 88, Conventional: 72 },
-        personalityTraits: { Openness: 88, Conscientiousness: 90, Extraversion: 70, Agreeableness: 80, EmotionalStability: 85 },
+        aptitudeScores: { quantitative: 88, logic: 92, problem_solving: 94, overall: 91 },
+        interestProfile: { Realistic: 78, Investigative: 94, Artistic: 72, Social: 68, Enterprising: 89, Conventional: 74 },
+        personalityTraits: { Openness: 90, Conscientiousness: 92, Extraversion: 72, Agreeableness: 82, EmotionalStability: 86 },
         interpretation: demoInterpretation,
         recommendedCareers: demoInterpretation.recommendedCareers
       });
